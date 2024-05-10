@@ -19,6 +19,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -33,59 +34,69 @@ import java.util.Locale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.style.TextAlign
 import com.example.mytodoapp_lab_3.R
+import com.example.mytodoapp_lab_3.TodoViewModel
 
 
 
+val DarkBlue = Color(0xFF00008B)  // Dark blue color
 
 @Composable
-fun TodoListPage() {
-    val todoList = getFakeTodo()
-    var inputText by remember { mutableStateOf("")
-    }
-   
+fun TodoListPage(viewModel: TodoViewModel) {
+    val todoList by viewModel.todoList.observeAsState()
+    var inputText by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
             .fillMaxHeight()
             .padding(8.dp)
     ) {
-
         Row(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly
-
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-
-            OutlinedTextField(value = inputText, onValueChange = {
-                inputText = it
-            } )
-
-            Button(onClick = { /*TODO*/ },
-             colors = ButtonDefaults.buttonColors(containerColor = DarkBlue),
-             modifier = Modifier.padding(start = 8.dp)) {
-            Text(text = "Add", color = Color.White)
-        }
-      }
-
-        LazyColumn {
-
-            itemsIndexed(todoList) { index: Int, item: Todo ->
-                TodoItem(item)
-
-
+            OutlinedTextField(
+                modifier = Modifier.weight(1f),
+                value = inputText,
+                onValueChange = { inputText = it }
+            )
+            Button(
+                onClick = {
+                    viewModel.addTodo(inputText)
+                    inputText = ""
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = DarkBlue),  // Set the button color to dark blue
+                modifier = Modifier.padding(start = 8.dp)  // Space between text field and button
+            ) {
+                Text(text = "Add", color = Color.White)
             }
-          }
         }
+
+        todoList?.let {
+            LazyColumn(
+                content = {
+                    itemsIndexed(it) { index, item ->
+                        TodoItem(item = item, onDelete = { viewModel.deleteTodo(item.id) })
+                    }
+                }
+            )
+        } ?: Text(
+            modifier = Modifier.fillMaxWidth(),  
+            textAlign = TextAlign.Center,
+            text = "No items yet",
+            fontSize = 16.sp
+        )
     }
+}
 
 
 
-   val DarkBlue = Color(0xFF00008B)
 
 @Composable
-fun TodoItem(item: Todo) {
+fun TodoItem(item : Todo,onDelete : ()-> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -94,15 +105,14 @@ fun TodoItem(item: Todo) {
             .background(DarkBlue)
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
+
     ) {
         Column(
             modifier = Modifier.weight(1f)
         ) {
-
-            // Assuming `createdAt` is a field in your Todo data model.
             Text(
-                text = SimpleDateFormat("HH:mm:ss, dd/MM/yyyy", Locale.ENGLISH).format(item.createdAt),
-                fontSize = 10.sp,
+                text = SimpleDateFormat("HH:mm:aa, dd/mm", Locale.ENGLISH).format(item.createdAt),
+                fontSize = 12.sp,
                 color = Color.LightGray
             )
             Text(
@@ -111,14 +121,12 @@ fun TodoItem(item: Todo) {
                 color = Color.White
             )
         }
-        IconButton(onClick = { })   {
-              Icon (
-                  painter = painterResource(id = R.drawable.baseline_delete_24),
-                  contentDescription = "Delete",
-                  tint = Color.White
-
-                  )
-
+        IconButton(onClick = onDelete) {
+            Icon(
+                painter = painterResource(id = R.drawable.baseline_delete_24),
+                contentDescription = "Delete",
+                tint = Color.White
+            )
         }
     }
 }
