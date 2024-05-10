@@ -23,20 +23,19 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.mytodoapp_lab_3.Todo
-import com.example.mytodoapp_lab_3.getFakeTodo
-import java.text.SimpleDateFormat
-import java.util.Locale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.mytodoapp_lab_3.R
+import com.example.mytodoapp_lab_3.Todo
 import com.example.mytodoapp_lab_3.TodoViewModel
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 
 
@@ -96,7 +95,7 @@ fun TodoListPage(viewModel: TodoViewModel) {
 
 
 @Composable
-fun TodoItem(item : Todo,onDelete : ()-> Unit) {
+fun TodoItem(item : Todo, onDelete : ()-> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
