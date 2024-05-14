@@ -31,6 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.mytodoapp_lab_3.R
 import com.example.mytodoapp_lab_3.Todo
 import com.example.mytodoapp_lab_3.TodoViewModel
@@ -110,7 +111,7 @@ fun TodoItem(item : Todo, onDelete : ()-> Unit) {
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = SimpleDateFormat("HH:mm:aa, dd/mm", Locale.ENGLISH).format(item.createdAt),
+                text = SimpleDateFormat("HH:mm:aa, dd/MM/yyyy", Locale.ENGLISH).format(item.createdAt),
                 fontSize = 12.sp,
                 color = Color.LightGray
             )
@@ -126,6 +127,18 @@ fun TodoItem(item : Todo, onDelete : ()-> Unit) {
                 contentDescription = "Delete",
                 tint = Color.White
             )
+
+            @Composable
+            fun TodoListPage(navController: NavController) {
+                Column {
+                    // Элементы списка дел
+                    Button(onClick = { navController.navigate("weatherScreen") }) {
+                        Text("Проверить погоду")
+                    }
+                }
+            }
+
         }
     }
 }
+
