@@ -1,28 +1,12 @@
 package com.example.mytodoapp_lab_3.ui.theme
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,75 +21,96 @@ import com.example.mytodoapp_lab_3.Todo
 import com.example.mytodoapp_lab_3.TodoViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
+import androidx.compose.runtime.livedata.observeAsState
 
-
-
+val Taupe = Color(0xFF968871)
+val Orange = Color(0xFFd37a1c)
 val DarkBlue = Color(0xFF00008B)  // Dark blue color
 
 @Composable
-fun TodoListPage(viewModel: TodoViewModel) {
-    val todoList by viewModel.todoList.observeAsState()
+fun TodoListPage(todoViewModel: TodoViewModel, navController: NavController) {
+    val todoList by todoViewModel.todoList.observeAsState(emptyList())
     var inputText by remember { mutableStateOf("") }
 
-    Column(
-        modifier = Modifier
-            .fillMaxHeight()
-            .padding(8.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            OutlinedTextField(
-                modifier = Modifier.weight(1f),
-                value = inputText,
-                onValueChange = { inputText = it }
-            )
-            Button(
-                onClick = {
-                    viewModel.addTodo(inputText)
-                    inputText = ""
-                },
-                colors = ButtonDefaults.buttonColors(containerColor = DarkBlue),  // Set the button color to dark blue
-                modifier = Modifier.padding(start = 8.dp)  // Space between text field and button
+    Scaffold(
+        bottomBar = {
+            BottomAppBar(
+                containerColor = Taupe  // Korrigerad parameter
             ) {
-                Text(text = "Add", color = Color.White)
+                Button(
+                    onClick = {
+                        navController.navigate("weather")
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = Taupe),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                ) {
+                    Text(text = "Weather today", color = Color.White)
+                }
             }
         }
-
-        todoList?.let {
-            LazyColumn(
-                content = {
-                    itemsIndexed(it) { index, item ->
-                        TodoItem(item = item, onDelete = { viewModel.deleteTodo(item.id) })
-                    }
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(padding)
+                .padding(8.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                OutlinedTextField(
+                    modifier = Modifier.weight(1f),
+                    value = inputText,
+                    onValueChange = { inputText = it }
+                )
+                Button(
+                    onClick = {
+                        todoViewModel.addTodo(inputText)
+                        inputText = ""
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = Orange),  // Set the button color to dark blue
+                    modifier = Modifier.padding(start = 8.dp)  // Space between text field and button
+                ) {
+                    Text(text = "Add", color = Color.White)
                 }
-            )
-        } ?: Text(
-            modifier = Modifier.fillMaxWidth(),  
-            textAlign = TextAlign.Center,
-            text = "No items yet",
-            fontSize = 16.sp
-        )
+            }
+
+            if (todoList.isEmpty()) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    text = "No items yet",
+                    fontSize = 16.sp
+                )
+            } else {
+                LazyColumn(
+                    modifier = Modifier.weight(1f),
+                    content = {
+                        itemsIndexed(todoList) { _, item ->
+                            TodoItem(item = item, onDelete = { todoViewModel.deleteTodo(item.id) })
+                        }
+                    }
+                )
+            }
+        }
     }
 }
 
-
-
-
 @Composable
-fun TodoItem(item : Todo, onDelete : ()-> Unit) {
+fun TodoItem(item: Todo, onDelete: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(DarkBlue)
+            .background(Taupe)
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
-
     ) {
         Column(
             modifier = Modifier.weight(1f)
@@ -127,18 +132,6 @@ fun TodoItem(item : Todo, onDelete : ()-> Unit) {
                 contentDescription = "Delete",
                 tint = Color.White
             )
-
-            @Composable
-            fun TodoListPage(navController: NavController) {
-                Column {
-                    // Элементы списка дел
-                    Button(onClick = { navController.navigate("weatherScreen") }) {
-                        Text("Проверить погоду")
-                    }
-                }
-            }
-
         }
     }
 }
-
