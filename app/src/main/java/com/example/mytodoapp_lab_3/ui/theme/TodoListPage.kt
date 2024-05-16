@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,13 +20,9 @@ import androidx.navigation.NavController
 import com.example.mytodoapp_lab_3.R
 import com.example.mytodoapp_lab_3.Todo
 import com.example.mytodoapp_lab_3.TodoViewModel
-import java.text.SimpleDateFormat
-import java.util.Locale
-import androidx.compose.runtime.livedata.observeAsState
 
-val Taupe = Color(0xFF968871)
 val Orange = Color(0xFFd37a1c)
-val DarkBlue = Color(0xFF00008B)
+val Taupe = Color(0xFF968871)
 
 @Composable
 fun TodoListPage(todoViewModel: TodoViewModel, navController: NavController) {
@@ -35,18 +32,24 @@ fun TodoListPage(todoViewModel: TodoViewModel, navController: NavController) {
     Scaffold(
         bottomBar = {
             BottomAppBar(
-                containerColor = Taupe  // Korrigerad parameter
+                containerColor = Taupe // Använd en lämplig färg
             ) {
-                Button(
-                    onClick = {
-                        navController.navigate("weather")
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = Taupe),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    Text(text = "Get Weather", color = Color.White)
+                    Button(
+                        onClick = { navController.navigate("weather") },
+                        colors = ButtonDefaults.buttonColors(containerColor = Taupe),
+                    ) {
+                        Text(text = "Weather")
+                    }
+                    Button(
+                        onClick = { navController.navigate("calendar") },
+                        colors = ButtonDefaults.buttonColors(containerColor = Taupe),
+                    ) {
+                        Text(text = "Calendar")
+                    }
                 }
             }
         }
@@ -66,15 +69,16 @@ fun TodoListPage(todoViewModel: TodoViewModel, navController: NavController) {
                 OutlinedTextField(
                     modifier = Modifier.weight(1f),
                     value = inputText,
-                    onValueChange = { inputText = it }
+                    onValueChange = { inputText = it },
+                    label = { Text("Enter Todo") }
                 )
                 Button(
                     onClick = {
                         todoViewModel.addTodo(inputText)
                         inputText = ""
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = Orange),  // Set the button color to dark blue
-                    modifier = Modifier.padding(start = 8.dp)  // Space between text field and button
+                    colors = ButtonDefaults.buttonColors(containerColor = Orange),
+                    modifier = Modifier.padding(start = 8.dp)
                 ) {
                     Text(text = "Add", color = Color.White)
                 }
@@ -115,11 +119,6 @@ fun TodoItem(item: Todo, onDelete: () -> Unit) {
         Column(
             modifier = Modifier.weight(1f)
         ) {
-            Text(
-                text = SimpleDateFormat("HH:mm:aa, dd/MM/yyyy", Locale.ENGLISH).format(item.createdAt),
-                fontSize = 12.sp,
-                color = Color.LightGray
-            )
             Text(
                 text = item.title,
                 fontSize = 20.sp,

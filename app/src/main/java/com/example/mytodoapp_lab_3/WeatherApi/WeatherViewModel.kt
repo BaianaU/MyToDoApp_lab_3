@@ -20,6 +20,7 @@ class WeatherViewModel : ViewModel() {
                 _weather.value = response
             } catch (e: Exception) {
                 // Handle error
+                _weather.value = null
             }
         }
     }

@@ -13,9 +13,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.mytodoapp_lab_3.ui.theme.MyToDoApp_lab_3Theme
-import com.example.mytodoapp_lab_3.ui.theme.TodoListPage
-import com.example.mytodoapp_lab_3.ui.theme.WeatherPage
+import com.example.mytodoapp_lab_3.ui.theme.*
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +41,9 @@ fun AppNavHost(navController: NavHostController, todoViewModel: TodoViewModel) {
         }
         composable("weather") {
             WeatherPage()
+        }
+        composable("calendar") {
+            CalendarPage()
         }
     }
 }
