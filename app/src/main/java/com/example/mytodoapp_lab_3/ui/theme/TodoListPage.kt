@@ -25,7 +25,7 @@ import androidx.compose.runtime.livedata.observeAsState
 
 val Taupe = Color(0xFF968871)
 val Orange = Color(0xFFd37a1c)
-val DarkBlue = Color(0xFF00008B)  // Dark blue color
+val DarkBlue = Color(0xFF00008B)
 
 @Composable
 fun TodoListPage(todoViewModel: TodoViewModel, navController: NavController) {
@@ -46,7 +46,7 @@ fun TodoListPage(todoViewModel: TodoViewModel, navController: NavController) {
                         .fillMaxWidth()
                         .padding(8.dp)
                 ) {
-                    Text(text = "Weather today", color = Color.White)
+                    Text(text = "Get Weather", color = Color.White)
                 }
             }
         }
