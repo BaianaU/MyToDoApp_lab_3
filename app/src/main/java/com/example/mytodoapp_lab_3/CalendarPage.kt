@@ -17,6 +17,6 @@ fun CalendarPage() {
         verticalArrangement = Arrangement.Center
     ) {
         Text(text = "Calendar Page")
-        // Här kan du lägga till mer kalenderrelaterad funktionalitet
+
     }
 }
